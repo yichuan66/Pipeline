@@ -1,5 +1,5 @@
 from unittest import TestCase
-
+import jobflow
 
 class TestJobFlow(TestCase):
     def test_load_dag_definition(self):
