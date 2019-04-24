@@ -4,6 +4,9 @@ The generic graph utility module
 
 class Graph:
 
+    def __init__(self):
+        pass
+
     def has_cycles(self, graph):
         """
         Determine if the input directed graph contains cycles.
@@ -13,7 +16,7 @@ class Graph:
 
         # prep
         node_state = {}
-        for node, edges in graph:
+        for node, edges in graph.items():
             node_state[node] = 0
 
         stack = self.get_source_nodes(graph)
@@ -45,14 +48,14 @@ class Graph:
         answer = []
 
         incoming_edge_count = {}
-        for parent, children in graph:
+        for parent, children in graph.items():
             incoming_edge_count[parent] = 0
 
-        for parent, children in graph:
+        for parent, children in graph.items():
             for child in children:
                 incoming_edge_count[child] += 1
 
-        for node, count in incoming_edge_count:
+        for node, count in incoming_edge_count.items():
             if count == 0:
                 answer.append(node)
 
