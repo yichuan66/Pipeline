@@ -1,6 +1,8 @@
 """
 This is the workflow module (library)
 """
+from graph_utility import Graph
+
 class JobFlow:
     """
     use centralized marker table and pre-assigned input/output filenames to avoid ambiguity (just like the fact that
@@ -19,12 +21,15 @@ class JobFlow:
 
     def load_dag_definition(self, dag_definition):
         """ key entry point for loading workflow definition """
-        self.create_reference_tables(dag_definition)
+        self.job_list = []
+        for job_def in dag_definition:
+            self.job_list.append(EtlJob(job_def))
+        self.create_reference_tables()
         self.create_dag_from_reference_tables()
         self.dag_sanity_check()
 
-    def create_reference_tables(self, job_list):
-        for job in job_list:
+    def create_reference_tables(self):
+        for job in self.job_list:
             self.job_lookup_table[job.job_uuid] = job
             self.job_id_to_name[job.job_uuid] = job.job_name
             self.job_name_to_id[job.job_name] = job.job_id
@@ -61,11 +66,21 @@ class JobFlow:
     def dag_sanity_check(self):
         """
         dag structure sanity check:
-            cycle detection
-            one connected component
+            the dag should not contain cycles
+            the dag should be connected, no islands allowed
         :return:
         """
-        pass
+        good_graph = True # note: use exception
+
+        if Graph.has_cycles(graph=self.dag_pointing_to_upstream) or \
+                Graph.has_cycles(graph=self.dag_pointing_to_downstream):
+            good_graph = False
+        if not Graph.is_connected(graph=self.dag_pointing_to_upstream) or \
+            not Graph.is_connected(graph=self.dag_pointing_to_downstream):
+            good_graph = False
+
+        if not good_graph:
+            print("DAG doesn't pass sanity check, please check your dag definition")
 
 import uuid
 
