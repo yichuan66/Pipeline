@@ -18,6 +18,7 @@ class JobFlow:
         self.job_lookup_table = {}
         self.job_id_to_name = {}
         self.job_name_to_id = {}
+        self.graph = Graph()
 
     def load_dag_definition(self, dag_definition):
         """ key entry point for loading workflow definition """
@@ -46,22 +47,7 @@ class JobFlow:
                 upstream_job_id = self.job_name_to_id[up_stream_job_name]
                 self.dag_pointing_to_upstream[job.job_uuid].append(upstream_job_id)
 
-        self.dag_pointing_to_downstream = self.generate_reverse_graph(self.dag_pointing_to_upstream)
-
-    def generate_reverse_graph(self, graph):
-        """
-        Generate the edge-reversed version of input directed graph
-        :param graph: a directed graph
-        :return: the edge-reversed version of input directed graph
-        """
-        answer = {}
-
-        for parent, children in graph:
-            for child in children:
-                if child not in answer:
-                    answer[child] = []
-                answer[child].append(parent)
-        return answer
+        self.dag_pointing_to_downstream = self.graph.generate_reverse_graph(self.dag_pointing_to_upstream)
 
     def dag_sanity_check(self):
         """
@@ -72,11 +58,11 @@ class JobFlow:
         """
         good_graph = True # note: use exception
 
-        if Graph.has_cycles(graph=self.dag_pointing_to_upstream) or \
-                Graph.has_cycles(graph=self.dag_pointing_to_downstream):
+        if self.graph.has_cycles(graph=self.dag_pointing_to_upstream) or \
+                self.graph.has_cycles(graph=self.dag_pointing_to_downstream):
             good_graph = False
-        if not Graph.is_connected(graph=self.dag_pointing_to_upstream) or \
-            not Graph.is_connected(graph=self.dag_pointing_to_downstream):
+        if not self.graph.is_connected(graph=self.dag_pointing_to_upstream) or \
+            not self.graph.is_connected(graph=self.dag_pointing_to_downstream):
             good_graph = False
 
         if not good_graph:

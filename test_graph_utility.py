@@ -36,3 +36,9 @@ class TestGraph(TestCase):
 
     def test_is_connected(self):
         self.fail()
+
+    def test_generate_reverse_graph(self):
+        self.fail()
+
+    def test_is_same_graph(self):
+        self.fail()

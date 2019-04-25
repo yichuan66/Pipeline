@@ -68,3 +68,35 @@ class Graph:
         :return: If the input directed graph is connected
         """
         return False
+
+    def generate_reverse_graph(self, graph):
+        """
+        Generate the edge-reversed version of input directed graph
+        :param graph: a directed graph
+        :return: the edge-reversed version of input directed graph
+        """
+        answer = {}
+
+        for parent, children in graph:
+            for child in children:
+                if child not in answer:
+                    answer[child] = []
+                answer[child].append(parent)
+        return answer
+
+    def is_equal(self, graph1, graph2):
+        """
+        Determine if two directed graphs are equal
+        :param graph1: graph 1
+        :param graph2: graph 2
+        :return: if two directed graphs are equal
+        """
+
+        if len(graph1) != len(graph2):
+            return False
+        for node, edges in graph1:
+            if node not in graph2:
+                return False
+            if sorted(graph1[node]) != sorted(graph2[node]):
+                return False
+        return True
