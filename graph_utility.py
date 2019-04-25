@@ -19,23 +19,23 @@ class Graph:
         for node, edges in graph.items():
             node_state[node] = 0
 
-        stack = self.get_source_nodes(graph)
-
         # algo
-        while len(stack)>0:
-            node = stack[-1]
-            if node_state[node] == 0:
-                node_state[node] = 1
-                for child in graph[node]:
-                    if node_state[child] == 0:
-                        stack.append(child)
-                    elif node_state[child] == 1:
-                        return True
-            elif node_state[node] == 1:
-                node_state[node] = 2
-                stack.pop()
-            else:
-                print("has_cycles: something went wrong")
+        for node, edges in graph.items():
+            if node_state[node] != 0:
+                continue
+            stack = [node]
+            while len(stack)>0:
+                node = stack[-1]
+                if node_state[node] == 0:
+                    node_state[node] = 1
+                    for child in graph[node]:
+                        if node_state[child] == 0:
+                            stack.append(child)
+                        elif node_state[child] == 1:
+                            return True
+                elif node_state[node] == 1:
+                    node_state[node] = 2
+                    stack.pop()
         return False
 
     def get_source_nodes(self, graph):

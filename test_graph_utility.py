@@ -15,8 +15,17 @@ class TestGraph(TestCase):
             test.assertEqual(g.has_cycles(graph=test_case["graph"]), test_case["expected_has_cycles"])
 
         test_cases = [
-            # new_test_case("empty graph", {}, False),
-            new_test_case("single node graph", {1 : []}, False)
+            new_test_case("empty graph", {}, False),
+            new_test_case("single node graph", {1: []}, False),
+            new_test_case("self loop node", {1: [1]}, True),
+            new_test_case("singly linked list", {1: [2], 2: [3], 3: []}, False),
+            new_test_case("no cycle graph 1", {1: [2, 3], 2: [], 3: []}, False),
+            new_test_case("no cycle graph 2", {1: [], 2: [1], 3: [1]}, False),
+            new_test_case("no cycle graph 3", {1: [2, 3], 2: [4], 3: [4], 4: []}, False),
+            new_test_case("cycle graph 1", {1: [2], 2: [3], 3: [1]}, True),
+            new_test_case("cycle graph 2", {1: [2], 2: [1]}, True),
+            new_test_case("cycle graph 3", {1: [2, 3], 2: [3, 4], 3: [4], 4: []}, False),
+            new_test_case("cycle graph 4", {1: [2, 3], 2: [4], 3: [3, 4], 4: []}, True)
         ]
 
         for tc in test_cases:
