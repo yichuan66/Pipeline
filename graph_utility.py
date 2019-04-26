@@ -2,6 +2,10 @@
 The generic graph utility module
 """
 
+"""
+the graphs here use an adjacency list representation --> dict({node: set()}) 
+"""
+
 class Graph:
 
     def __init__(self):
@@ -61,13 +65,38 @@ class Graph:
 
         return answer
 
-    def is_connected(self, graph):
+    def is_connected_as_a_undirected_graph(self, graph):
         """
-        Determine if the input directed graph is connected
+        Determine if the input directed graph is connected if we treat all the edges as undirected
         :param graph: input directed graph
         :return: If the input directed graph is connected
         """
-        return False
+        if len(graph) == 0:
+            return True
+
+        bidirection_graph = graph
+        node_state = {}
+        for node, edges in graph:
+            node_state[node] = 0
+            for edge in edges:
+                bidirection_graph[edge].add(node)
+
+        stack = []
+        stack.append(bidirection_graph.keys()[0])
+        node_state[stack[0]] = 1
+
+        while len(stack) > 0:
+            node = stack.pop()
+            for child in bidirection_graph[node]:
+                if node_state[child] == 0:
+                    stack.append(child)
+                    node_state[child] = 1
+
+        state_sum = 0
+        for key, value in node_state:
+            state_sum += value
+
+        return not state_sum == len(bidirection_graph)
 
     def generate_reverse_graph(self, graph):
         """
@@ -80,7 +109,7 @@ class Graph:
         for parent, children in graph:
             for child in children:
                 if child not in answer:
-                    answer[child] = []
+                    answer[child] = set()
                 answer[child].append(parent)
         return answer
 

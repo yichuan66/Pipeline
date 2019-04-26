@@ -42,7 +42,7 @@ class JobFlow:
 
         # setup dag using job_uuid as node value
         for job in self.job_list:
-            self.dag_pointing_to_upstream[job.job_uuid] = []
+            self.dag_pointing_to_upstream[job.job_uuid] = set()
             for up_stream_job_name in job.depend_on:
                 upstream_job_id = self.job_name_to_id[up_stream_job_name]
                 self.dag_pointing_to_upstream[job.job_uuid].append(upstream_job_id)
